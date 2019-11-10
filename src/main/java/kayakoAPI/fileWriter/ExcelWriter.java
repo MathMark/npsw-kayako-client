@@ -6,7 +6,7 @@ import kayakoAPI.pojos.Conversation;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import pojos.conversationStatus.Status;
+import kayakoAPI.pojos.conversationStatus.Status;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;

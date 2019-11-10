@@ -1,9 +1,12 @@
-package pojos.conversationStatus;
+package kayakoAPI.pojos.conversationStatus;
+
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public enum Status {
     NEW(1),
     OPEN(2),
@@ -14,14 +17,6 @@ public enum Status {
     private int number;
 
     Status(int number){
-        this.number = number;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
         this.number = number;
     }
 

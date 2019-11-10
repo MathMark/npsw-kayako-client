@@ -3,7 +3,9 @@ package kayakoAPI.pojos;
 import common.annotaions.CustomField;
 import common.annotaions.Excel;
 import common.annotaions.JsonField;
+import lombok.Data;
 
+@Data
 public class User {
 
     @JsonField(path = "/data/full_name")
@@ -27,38 +29,6 @@ public class User {
     public User(String fullName, String acpLink){
         this.fullName = fullName;
         this.acpLink = acpLink;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getAcpLink() {
-        return acpLink;
-    }
-
-    public void setAcpLink(String acpLink) {
-        this.acpLink = acpLink;
-    }
-
-    public String getAcpId() {
-        return acpId;
-    }
-
-    public void setAcpId(String acpId) {
-        this.acpId = acpId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public void initializeUserId(){

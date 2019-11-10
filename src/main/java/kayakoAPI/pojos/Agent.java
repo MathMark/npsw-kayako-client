@@ -1,9 +1,11 @@
 package kayakoAPI.pojos;
 
+import lombok.Getter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public enum Agent {
     GRAVELOT(43708,"Alexey Podlipny"),
     MARK(74618,"Mark Martsun"),
@@ -34,13 +36,5 @@ public enum Agent {
 
     public static Agent fromId(int id){
         return agentsMap.get(id);
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public int getId() {
-        return id;
     }
 }

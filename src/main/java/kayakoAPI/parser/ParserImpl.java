@@ -8,7 +8,7 @@ import kayakoAPI.pojos.User;
 import kayakoAPI.urls.URLS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import pojos.conversationStatus.Status;
+import kayakoAPI.pojos.conversationStatus.Status;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
