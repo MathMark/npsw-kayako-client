@@ -3,10 +3,14 @@ package kayakoAPI.fileWriter;
 import common.annotaions.DateType;
 import common.annotaions.Excel;
 import kayakoAPI.pojos.Conversation;
+import kayakoAPI.pojos.conversationStatus.Status;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import kayakoAPI.pojos.conversationStatus.Status;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -21,8 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ExcelWriter {
+@Service
+public class ExcelWriter implements TableExporter {
 
+    @Getter
+    @Setter
+    @Value("${exportExcelFile}")
     private String fileName;
 
     private Workbook workbook;
@@ -272,13 +280,5 @@ public class ExcelWriter {
             cell.setCellValue(columnHeaders[i]);
             cell.setCellStyle(headerCellStyle);
         }
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
     }
 }

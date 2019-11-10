@@ -1,12 +1,15 @@
 package kayakoAPI;
 
+import kayakoAPI.config.AppConfig;
 import kayakoAPI.dates.DateAnalyzer;
-import kayakoAPI.fileWriter.ExcelWriter;
-import kayakoAPI.parser.JsonGetter;
+import kayakoAPI.fileWriter.TableExporter;
 import kayakoAPI.parser.ParserImpl;
+import kayakoAPI.parser.kayakoClient.KayakoClient;
 import kayakoAPI.pojos.Conversation;
 import kayakoAPI.timeMeasurer.Time;
 import kayakoAPI.timeMeasurer.TimeMeasurer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -26,18 +29,16 @@ public class Main {
         System.out.println("Enter the password: ");
         String password = scanner.nextLine();
 
-        //
-        JsonGetter getter = new JsonGetter(login, password);
-        DateAnalyzer dateAnalyzer = new DateAnalyzer();
-
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         Logger logger = Logger.getLogger(Main.class.getName());
 
         try{
-            ParserImpl parserImpl = new ParserImpl();
-            parserImpl.setJsonGetter(getter);
-            parserImpl.setDateAnalyzer(dateAnalyzer);
-
-            ExcelWriter excelWriter = new ExcelWriter("conversations");
+            TableExporter excelWriter = (TableExporter) context.getBean("excelWriter");
+            KayakoClient getter = (KayakoClient) context.getBean("kayakoClient");
+            getter.setUser(login);
+            getter.setPassword(password);
+            DateAnalyzer dateAnalyzer = (DateAnalyzer) context.getBean("dateAnalyzer");
+            ParserImpl parserImpl = (ParserImpl) context.getBean("parser");
 
             Date requiredDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-11-10");
 

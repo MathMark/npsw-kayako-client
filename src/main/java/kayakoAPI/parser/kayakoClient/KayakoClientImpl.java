@@ -1,27 +1,25 @@
-package kayakoAPI.parser;
+package kayakoAPI.parser.kayakoClient;
 
 import com.ning.http.client.AsyncHttpClient;
 import kayakoAPI.urls.URLS;
+import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class JsonGetter {
-    private final String user;
-    private final String password;
+@Component
+@Data
+public class KayakoClientImpl implements KayakoClient {
+    private String user;
+    private String password;
 
-    public JsonGetter(String user, String password){
+    public KayakoClientImpl(){}
+
+    public KayakoClientImpl(String user, String password){
         this.user = user;
         this.password = password;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getJsonFromUrl(String url){

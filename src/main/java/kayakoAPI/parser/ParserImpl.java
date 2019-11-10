@@ -1,14 +1,19 @@
 package kayakoAPI.parser;
 
-import kayakoAPI.dates.DateAnalyzer;
+import kayakoAPI.dates.DateSplitter;
 import kayakoAPI.mappers.universalMappers.UniversalMapper;
+import kayakoAPI.parser.kayakoClient.KayakoClient;
 import kayakoAPI.pojos.Agent;
 import kayakoAPI.pojos.Conversation;
 import kayakoAPI.pojos.User;
+import kayakoAPI.pojos.conversationStatus.Status;
 import kayakoAPI.urls.URLS;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import kayakoAPI.pojos.conversationStatus.Status;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -21,13 +26,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+@Getter
+@Setter
+@Component
 public class ParserImpl implements Parser{
 
     private static BlockingQueue<JSONObject> queue = new ArrayBlockingQueue<>(500);
     private volatile AtomicInteger pageCount = new AtomicInteger();
 
-    private JsonGetter jsonGetter;
-    private DateAnalyzer dateAnalyzer;
+    @Autowired
+    private KayakoClient kayakoClient;
+
+    @Autowired
+    private DateSplitter dateAnalyzer;
 
     private Logger logger = Logger.getLogger(ParserImpl.class.getName());
 
@@ -56,7 +67,7 @@ public class ParserImpl implements Parser{
 
             boolean stop = false;
             do{
-                jsonPage = jsonGetter.getJsonFromUrl(currentUrl);
+                jsonPage = kayakoClient.getJsonFromUrl(currentUrl);
                 jsonObjects = new JSONObject(jsonPage).getJSONArray("data");
 
                 for(Object object : jsonObjects){
@@ -111,7 +122,7 @@ public class ParserImpl implements Parser{
 
                     conversation.setConversationLink(URLS.CONVERSATION.getUrl() + conversation.getConversationId().toString());
                     //Requester
-                    userData = jsonGetter.getJsonFromUrl(URLS.USER.getUrl() + conversation.getRequesterId());
+                    userData = kayakoClient.getJsonFromUrl(URLS.USER.getUrl() + conversation.getRequesterId());
                     User user = userMapper.mapObject(new JSONObject(userData), new User());
                     user.initializeUserId();
                     conversation.setRequester(user);
@@ -178,7 +189,7 @@ public class ParserImpl implements Parser{
                     conversation = conversationMapper.mapObject((JSONObject)data, new Conversation());
 
                     //Requester
-                    user = jsonGetter.getJsonFromUrl(URLS.USER.getUrl() + conversation.getRequesterId());
+                    user = kayakoClient.getJsonFromUrl(URLS.USER.getUrl() + conversation.getRequesterId());
                     conversation.setRequester(userMapper.mapObject(new JSONObject(user), new User()));
                     conversation.setStatus(Status.fromInt(conversation.getStatusId()));
 
@@ -210,30 +221,14 @@ public class ParserImpl implements Parser{
     }
 
     private JSONArray getData(String currentUrl){
-        JSONObject conversationJsonPage = new JSONObject(jsonGetter.getJsonFromUrl(currentUrl));
+        JSONObject conversationJsonPage = new JSONObject(kayakoClient.getJsonFromUrl(currentUrl));
         System.out.println(conversationJsonPage.get("status"));
         return conversationJsonPage.getJSONArray("data");
     }
 
     private String getNextUrl(String currentUrl){
-        JSONObject conversationJsonPage = new JSONObject(jsonGetter.getJsonFromUrl(currentUrl));
+        JSONObject conversationJsonPage = new JSONObject(kayakoClient.getJsonFromUrl(currentUrl));
         return conversationJsonPage.getString("next_url");
-    }
-
-    public JsonGetter getJsonGetter() {
-        return jsonGetter;
-    }
-
-    public void setJsonGetter(JsonGetter jsonGetter) {
-        this.jsonGetter = jsonGetter;
-    }
-
-    public DateAnalyzer getDateAnalyzer() {
-        return dateAnalyzer;
-    }
-
-    public void setDateAnalyzer(DateAnalyzer dateAnalyzer) {
-        this.dateAnalyzer = dateAnalyzer;
     }
 
 }
